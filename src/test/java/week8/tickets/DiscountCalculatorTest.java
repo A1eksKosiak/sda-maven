@@ -310,16 +310,4 @@ public class DiscountCalculatorTest {
         assertEquals(90, result);
     }
 
-    @Test
-    public void calculate_Returns90_IfPersonsAgeIs69AndStatusIsDisabled() {
-        // given
-        Person person = new Person(69, DISABLED);
-
-        // when
-        int result = discountCalculator.calculate(person);
-
-        // then
-        assertEquals(90, result);
-    }
-
 }
