@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static week8.tickets.PersonStatus.DISABLED;
 import static week8.tickets.PersonStatus.STUDENT;
+import static week8.tickets.PersonStatus.VIP;
 
 public class DiscountCalculatorTest {
     private static DiscountCalculator discountCalculator;
@@ -308,6 +309,18 @@ public class DiscountCalculatorTest {
 
         // then
         assertEquals(90, result);
+    }
+
+    @Test
+    public void calculate_Returns100_IfPersonsAgeIs27AndStatusIsVip() {
+        // given
+        Person person = new Person(27, VIP);
+
+        // when
+        int result = discountCalculator.calculate(person);
+
+        // then
+        assertEquals(100, result);
     }
 
 }
