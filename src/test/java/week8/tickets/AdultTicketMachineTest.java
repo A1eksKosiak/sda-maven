@@ -1,9 +1,7 @@
 package week8.tickets;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -11,15 +9,20 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+//@RunWith(MockitoJUnitRunner.class)
 public class AdultTicketMachineTest {
 
-    @Mock
+    //    @Mock
     private DiscountCalculator discountCalculator;
 
     private Clock clock = Clock.fixed(Instant.parse("2018-08-27T10:00:00Z"), ZoneId.of("Europe/Tallinn"));
+
+    @Before
+    public void setUp() throws Exception {
+        discountCalculator = spy(new DiscountCalculator());
+    }
 
     @Test
     public void buy_ThrowsNoPersonDataException_IfPersonIsNull() {
@@ -36,6 +39,8 @@ public class AdultTicketMachineTest {
             assertEquals("Sorry, no person data", e.getMessage());
             assertNotNull(e.getTimestamp());
             assertEquals(LocalDateTime.now(clock), e.getTimestamp());
+            // verify "calculate()" was never called with any parameters
+            verify(discountCalculator,never()).calculate(any());
         }
     }
 
@@ -72,5 +77,7 @@ public class AdultTicketMachineTest {
         assertEquals(person, result.getPerson());
         assertNotNull(result.getTimestamp());
 //        assertEquals(LocalDateTime.now(clock), result.getTimestamp());
+        // verify "calculate()" was called with "person" parameter
+        verify(discountCalculator).calculate(person);
     }
 }
