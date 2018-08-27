@@ -1,5 +1,6 @@
 package week8.tickets;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -11,15 +12,19 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
 public class AdultTicketMachineTest {
 
-    @Mock
     private DiscountCalculator discountCalculator;
 
     private Clock clock = Clock.fixed(Instant.parse("2018-08-27T10:00:00Z"), ZoneId.of("Europe/Tallinn"));
+
+    @Before
+    public void setUp() throws Exception {
+        discountCalculator = mock(DiscountCalculator.class);
+    }
 
     @Test
     public void buy_ThrowsNoPersonDataException_IfPersonIsNull() {
