@@ -1,6 +1,5 @@
 package week8.tickets;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -12,7 +11,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
