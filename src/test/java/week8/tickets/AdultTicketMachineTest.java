@@ -1,5 +1,6 @@
 package week8.tickets;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,9 +39,9 @@ public class AdultTicketMachineTest {
             fail("no exception was thrown");
         } catch (NoPersonDataException e) {
             // then
-            assertEquals("Sorry, no person data", e.getMessage());
-            assertNotNull(e.getTimestamp());
-            assertEquals(LocalDateTime.now(clock), e.getTimestamp());
+
+            Assertions.assertThat(e).hasMessage("Sorry, no person data");
+            Assertions.assertThat(e.getTimestamp()).isEqualTo(LocalDateTime.now(clock));
             // verify "calculate()" was never called with any parameters
             verify(discountCalculator, never()).calculate(any());
         }
