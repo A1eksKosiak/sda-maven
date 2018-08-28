@@ -7,6 +7,8 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -40,7 +42,7 @@ public class AdultTicketMachineTest {
             assertNotNull(e.getTimestamp());
             assertEquals(LocalDateTime.now(clock), e.getTimestamp());
             // verify "calculate()" was never called with any parameters
-            verify(discountCalculator,never()).calculate(any());
+            verify(discountCalculator, never()).calculate(any());
         }
     }
 
@@ -79,5 +81,127 @@ public class AdultTicketMachineTest {
 //        assertEquals(LocalDateTime.now(clock), result.getTimestamp());
         // verify "calculate()" was called with "person" parameter
         verify(discountCalculator).calculate(person);
+    }
+
+    @Test
+    public void buy_ThrowTooYoungException_IfPersonIsNotAdult() throws TooYoungException, NoPersonDataException {
+        // given
+        Person person = new Person(5);
+        AdultTicketMachine adultTicketMachine = new AdultTicketMachine(discountCalculator, 100, clock);
+
+        // when
+        try {
+            adultTicketMachine.buy(person);
+            fail("no exception was thrown");
+        } catch (TooYoungException e) {
+            // then
+            assertEquals("Sorry, you're too young", e.getMessage());
+            assertNotNull(e.getTimestamp());
+            assertEquals(LocalDateTime.now(clock), e.getTimestamp());
+            // verify "calculate()" was never called with any parameters
+            verify(discountCalculator, never()).calculate(any());
+        } catch (NoPersonDataException e) {
+            fail("NoPersonalDataException called");
+        }
+    }
+
+    @Test
+    public void buy_ThrowTooYoungException_IfPersonIsNotAdultAge17() throws TooYoungException, NoPersonDataException {
+        // given
+        Person person = new Person(17);
+        AdultTicketMachine adultTicketMachine = new AdultTicketMachine(discountCalculator, 100, clock);
+
+        // when
+        try {
+            adultTicketMachine.buy(person);
+            fail("no exception was thrown");
+        } catch (TooYoungException e) {
+            // then
+            assertEquals("Sorry, you're too young", e.getMessage());
+            assertNotNull(e.getTimestamp());
+            assertEquals(LocalDateTime.now(clock), e.getTimestamp());
+            // verify "calculate()" was never called with any parameters
+            verify(discountCalculator, never()).calculate(any());
+        }
+    }
+
+    @Test
+    public void buy_ReturnsFullPriceTicket_IfAdultPersonAge18() throws NoPersonDataException {
+        // given
+        Person person = new Person(18);
+        AdultTicketMachine adultTicketMachine = new AdultTicketMachine(discountCalculator, 100, clock);
+
+        // when
+        Ticket result = adultTicketMachine.buy(person);
+
+        // then
+        assertEquals(100, result.getPrice());
+        assertEquals(person, result.getPerson());
+        assertNotNull(result.getTimestamp());
+//        assertEquals(LocalDateTime.now(clock), result.getTimestamp());
+        verify(discountCalculator).calculate(person);
+    }
+
+    @Test
+    public void buy_ReturnsFullPriceTicket_IfAdultPersonAge19() throws NoPersonDataException {
+        // given
+        Person person = new Person(19);
+        AdultTicketMachine adultTicketMachine = new AdultTicketMachine(discountCalculator, 100, clock);
+
+        // when
+        Ticket result = adultTicketMachine.buy(person);
+
+        // then
+        assertEquals(100, result.getPrice());
+        assertEquals(person, result.getPerson());
+        assertNotNull(result.getTimestamp());
+//        assertEquals(LocalDateTime.now(clock), result.getTimestamp());
+        verify(discountCalculator).calculate(person);
+    }
+
+    @Test
+    public void getTicketsSold_ReturnZero_IfNullTicketsSold() {
+        // given
+        AdultTicketMachine adultTicketMachine = new AdultTicketMachine(discountCalculator, 100, clock);
+
+        // when
+        List<Ticket> result = adultTicketMachine.getTicketsSold();
+
+        // then
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void getTicketsSold_ReturnOneTicket_IfOneTicketSold() throws NoPersonDataException {
+        // given
+        AdultTicketMachine adultTicketMachine = new AdultTicketMachine(discountCalculator, 100, clock);
+        Person person = new Person(20);
+        adultTicketMachine.buy(person);
+
+        // when
+        List<Ticket> result = adultTicketMachine.getTicketsSold();
+
+        // then
+        assertEquals(1, result.size());
+        assertEquals(new Ticket(person, 100, LocalDateTime.now(clock)), result.get(0));
+    }
+
+    @Test
+    public void getTicketsSold_ReturnTickets_IfThreeTicketsSold() throws NoPersonDataException {
+        // given
+        List<Ticket> tickets = new ArrayList<>();
+        AdultTicketMachine adultTicketMachine = new AdultTicketMachine(discountCalculator, 100, clock);
+        Person firstPerson = new Person(20);
+        Person secondPerson = new Person(30);
+        Person thirdPerson = new Person(40);
+        tickets.add(adultTicketMachine.buy(firstPerson));
+        tickets.add(adultTicketMachine.buy(secondPerson));
+        tickets.add(adultTicketMachine.buy(thirdPerson));
+
+        // when
+        List<Ticket> result = adultTicketMachine.getTicketsSold();
+
+        // then
+        assertEquals(tickets, result);
     }
 }
