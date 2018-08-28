@@ -192,7 +192,6 @@ public class AdultTicketMachineTest {
     @Test
     public void getTicketsSold_ReturnTickets_IfThreeTicketsSold() throws NoPersonDataException {
         // given
-        List<Ticket> tickets = new ArrayList<>();
         AdultTicketMachine adultTicketMachine = new AdultTicketMachine(discountCalculator, 100, clock);
         Person firstPerson = new Person(20);
         Person secondPerson = new Person(30);
@@ -205,9 +204,9 @@ public class AdultTicketMachineTest {
         List<Ticket> result = adultTicketMachine.getTicketsSold();
 
         // then
-        assertEquals(3, result.size());
-        assertEquals(new Ticket(firstPerson, 100, LocalDateTime.now(clock)), result.get(0));
-        assertEquals(new Ticket(secondPerson, 100, LocalDateTime.now(clock)), result.get(1));
-        assertEquals(new Ticket(thirdPerson, 100, LocalDateTime.now(clock)), result.get(2));
+        assertThat(result).containsExactly(
+                new Ticket(firstPerson, 100, LocalDateTime.now(clock)),
+                new Ticket(secondPerson, 100, LocalDateTime.now(clock)),
+                new Ticket(thirdPerson, 100, LocalDateTime.now(clock)));
     }
 }
