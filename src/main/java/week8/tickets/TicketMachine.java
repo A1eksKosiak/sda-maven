@@ -7,7 +7,7 @@ import java.util.List;
 
 public abstract class TicketMachine {
     private List<Ticket> tickets;
-    private Clock clock;
+    protected Clock clock;
     private DiscountCalculator discountCalculator;
     private int price;
 
