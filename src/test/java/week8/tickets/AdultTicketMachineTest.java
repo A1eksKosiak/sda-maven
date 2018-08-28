@@ -1,6 +1,7 @@
 package week8.tickets;
 
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.Java6Assertions;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,6 +12,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Java6Assertions.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -34,17 +36,17 @@ public class AdultTicketMachineTest {
         AdultTicketMachine adultTicketMachine = new AdultTicketMachine(discountCalculator, 100, clock);
 
         // when
-        try {
-            adultTicketMachine.buy(person);
-            fail("no exception was thrown");
-        } catch (NoPersonDataException e) {
-            // then
+        Throwable result = catchThrowable(() -> adultTicketMachine.buy(person));
 
-            Assertions.assertThat(e).hasMessage("Sorry, no person data");
-            Assertions.assertThat(e.getTimestamp()).isEqualTo(LocalDateTime.now(clock));
-            // verify "calculate()" was never called with any parameters
-            verify(discountCalculator, never()).calculate(any());
-        }
+        // then
+        Assertions.assertThat(result)
+                .hasMessage("Sorry, no person data")
+                .isInstanceOfSatisfying(NoPersonDataException.class, e -> {
+                    Assertions.assertThat(e.getTimestamp()).isEqualTo(LocalDateTime.now(clock));
+                });
+        // verify "calculate()" was never called with any parameters
+
+        verify(discountCalculator, never()).calculate(any());
     }
 
     @Test
@@ -93,7 +95,7 @@ public class AdultTicketMachineTest {
         // when
         try {
             adultTicketMachine.buy(person);
-            fail("no exception was thrown");
+//            fail("no exception was thrown");
         } catch (TooYoungException e) {
             // then
             assertEquals("Sorry, you're too young", e.getMessage());
@@ -102,7 +104,7 @@ public class AdultTicketMachineTest {
             // verify "calculate()" was never called with any parameters
             verify(discountCalculator, never()).calculate(any());
         } catch (NoPersonDataException e) {
-            fail("NoPersonalDataException called");
+//            fail("NoPersonalDataException called");
         }
     }
 
@@ -115,7 +117,7 @@ public class AdultTicketMachineTest {
         // when
         try {
             adultTicketMachine.buy(person);
-            fail("no exception was thrown");
+//            fail("no exception was thrown");
         } catch (TooYoungException e) {
             // then
             assertEquals("Sorry, you're too young", e.getMessage());
