@@ -194,14 +194,17 @@ public class AdultTicketMachineTest {
         Person firstPerson = new Person(20);
         Person secondPerson = new Person(30);
         Person thirdPerson = new Person(40);
-        tickets.add(adultTicketMachine.buy(firstPerson));
-        tickets.add(adultTicketMachine.buy(secondPerson));
-        tickets.add(adultTicketMachine.buy(thirdPerson));
+        adultTicketMachine.buy(firstPerson);
+        adultTicketMachine.buy(secondPerson);
+        adultTicketMachine.buy(thirdPerson);
 
         // when
         List<Ticket> result = adultTicketMachine.getTicketsSold();
 
         // then
-        assertEquals(tickets, result);
+        assertEquals(3, result.size());
+        assertEquals(new Ticket(firstPerson, 100, LocalDateTime.now(clock)), result.get(0));
+        assertEquals(new Ticket(secondPerson, 100, LocalDateTime.now(clock)), result.get(1));
+        assertEquals(new Ticket(thirdPerson, 100, LocalDateTime.now(clock)), result.get(2));
     }
 }

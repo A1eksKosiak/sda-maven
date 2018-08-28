@@ -1,6 +1,7 @@
 package week8.tickets;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Ticket {
     private Person person;
@@ -32,22 +33,18 @@ public class Ticket {
 
     @Override
     public boolean equals(Object o) {
+
         if (this == o) return true;
-        if (!(o instanceof Ticket)) return false;
-
+        if (o == null || getClass() != o.getClass()) return false;
         Ticket ticket = (Ticket) o;
-
-        if (price != ticket.price) return false;
-        if (person != null ? !person.equals(ticket.person) : ticket.person != null) return false;
-        return timestamp != null ? timestamp.equals(ticket.timestamp) : ticket.timestamp == null;
+        return price == ticket.price &&
+                Objects.equals(person, ticket.person) &&
+                Objects.equals(timestamp, ticket.timestamp);
     }
 
     @Override
     public int hashCode() {
-        int result = person != null ? person.hashCode() : 0;
-        result = 31 * result + price;
-        result = 31 * result + (timestamp != null ? timestamp.hashCode() : 0);
-        return result;
+        return Objects.hash(person, price, timestamp);
     }
 
     @Override
